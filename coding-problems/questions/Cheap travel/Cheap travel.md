@@ -90,12 +90,6 @@ Output will be 1
 Output will be 0
 ```
 
-**Large input test cases**
-
-```
-
-```
-
 ### Hints
 
 - Notice that $N$ and $M$ are large. So which algorithm can be used to find the shortest path?
@@ -124,9 +118,19 @@ Now we have to effeciently find the $answer_i$ for each edge. This can be easily
 
 And the **final $answer$** = **$min(answer_i)$** for all **$1 \leq i \leq N$**
 
-**Things to keep in mind**
+**Time complexity: $O(|M| + |N|\log{M})$**
+**Space complexity: $O(|M|)$**
 
 **Resource links**
+
+- [Dijkstra Algorithm](https://cp-algorithms.com/graph/dijkstra.html)
+- [Priority queue in C++](https://www.geeksforgeeks.org/priority-queue-in-cpp-stl/)
+
+**Related problems**
+
+- [CF 20C](https://codeforces.com/contest/20/problem/C)
+- [CF 986A](https://codeforces.com/contest/986/problem/A)
+- [CF 229B](https://codeforces.com/contest/229/problem/B)
 
 ### Code
 
