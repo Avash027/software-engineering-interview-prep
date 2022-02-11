@@ -88,7 +88,7 @@ Now Doe cannot make any move, hence John wins
 
 Our aim is to find if the player starting the game (in this case John) with n stones can win.
 So to ensure John to win the player stating the game with $n - y$ should always lose. (Here y is any prime factor of n).
-As you can see that we are are dependent on the outcomes of the previous $n$ and therefore we must store it.
+As you can see that we are dependent on the outcomes of the previous $n$, and therefore we must store it.
 
 Let us look at an example
 

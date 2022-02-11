@@ -98,9 +98,9 @@ We will slowly move both boundaries of this segment to the right.
 
 - If we added a right element and the sum has become more than $k$, then we need to move the left border forward. And we need to keep moving it forward until the sum on the segment again becomes less than or equal to $k$.
 
-- Once we have a longest good segment we can divide it into smaller segments. These smaller segments will always be good because, `sum of smaller segment` $\leq$ `sum of largest segment` $\leq k$.
+- Once we have the longest good segment we can divide it into smaller segments. These smaller segments will always be good because, `sum of smaller segment` $\leq$ `sum of largest segment` $\leq k$.
 
-- We can calculate the number of subsegments of a larger segment of length $X$ using the formula : $X*(X+1)/2$
+- We can calculate the sum of subsegments of a larger segment of length $X$ using the formula : $X*(X+1)/2$
 
 **Note:** The left and right boundaries only traverse the array at most once each.
 
