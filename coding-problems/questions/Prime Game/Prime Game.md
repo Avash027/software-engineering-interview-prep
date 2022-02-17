@@ -8,7 +8,7 @@ Print **YES** if and only if John wins the game else print **NO**. Consider both
 
 ### Constraints
 
-$0\le N\le{10}^5$
+$0\le N\le{10}^4$
 
 ### Input
 
@@ -92,11 +92,11 @@ As you can see that we are dependent on the outcomes of the previous $n$, and th
 
 Let us look at an example
 
-- For $n=0$ John cannot make a move so he looses.
-- For $n=1$ John cannot make a move so he looses.
+- For $n=0$ John cannot make a move, so he looses.
+- For $n=1$ John cannot make a move, so he looses.
 - For $n=2$ John can subtract 2 from the n. After subtracting we check what is left ($n-y$). Here it is 0, As Doe cannot make any move he loses and John wins
 - For $n=3$ John can subtract 3 from the n. Here it is 0, As Doe cannot make any move he loses and John wins
-- For $n=4$ John can subtract only $2$, so now $2$ is left.From our previous result we know player at 2 can win by subtracting 2 so Doe wins and John loses
+- For $n=4$ John can subtract only $2$, so now $2$ is left. From our previous result we know player at 2 can win by subtracting 2 so Doe wins and John loses
 - For $n=5$ John can subtract $5$ and win
 - For $n=6$ John can subtract $2$ or $3$. Now we want the other player to land on a losing number. If we subtract $3$ then Doe will win as $3$ is a winning number. So John can subtract $2$ and win.
 
@@ -110,17 +110,23 @@ dp[i] = !dp[i - p1] || !dp[i-p2] ... !dp[i-pn] (p are the prime factor of i)
 
 **Time complexity**
 
-It will take at most $O(\sqrt{n})$ to calculate prime factors and we are interating from 1 to n.
+It will take at most $O(\sqrt{n})$ to calculate prime factors, and we are iterating from 1 to n.
 
 Time Complexity: $O(n\sqrt{n})$
 
+**Space complexity :** $O(N)$
+
+**Bonus :** The constraints allows us to solve it in $O(n\sqrt{n})$, but you can also solve it in $O(n\log{n})$. You can check the resources for further reading.
+
 **Resource links**
 
-- [Aditya verma DP series](https://www.youtube.com/watch?v=nqowUJzG-iM&list=PL_z_8CaSLPWekqhdCPmFohncHwz8TY2Go)
+- [Aditya Verma DP series](https://www.youtube.com/watch?v=nqowUJzG-iM&list=PL_z_8CaSLPWekqhdCPmFohncHwz8TY2Go)
 
 - [Striver DP series](https://www.youtube.com/playlist?list=PLgUwDviBIf0qUlt5H_kiKYaNSqJ81PMMY)
 
 - [Prime factorization](https://www.geeksforgeeks.org/print-all-prime-factors-of-a-given-number/)
+
+- [Prime factorization in O(logN)](https://www.geeksforgeeks.org/prime-factorization-using-sieve-olog-n-multiple-queries/)
 
 - [Intermmediate number theory](https://cp-algorithms.com/#algebra)
 
