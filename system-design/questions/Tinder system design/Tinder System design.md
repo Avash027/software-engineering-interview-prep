@@ -17,9 +17,9 @@
 
 ### Estimation
 
-- We will store 5 profile images per users.
-- We are assuming the number of active user is 10 million.
-- We are assuming the number of matches is $0.1\%$ of total active users i.e., $1000$ matches daily.
+- We will store **5 profile images per users.**
+- We are assuming the **number of active user is 10 million.**
+- We are assuming the **number of matches is $0.1\%$ of total active users i.e., $1000$ matches daily.**
 
 ### Requirement 1: Profile creation, authentication and storage
 
@@ -46,6 +46,8 @@ System needs to store profile name, age, location and description in a relationa
   - We will use CDN to serve the static images faster.
 
 - **Relational database to store user information**
+
+  - We will store the user ID, name, age, location, gender, description, (user preferences) etc.
 
 #### Trade-offs
 
@@ -88,16 +90,16 @@ To achieve this we use XMPP protocol that allows peer to peer communication.
 
   - We will use this database to store the user ID and connection ID
 
-- **Cache**
+- **[Extra] Cache**
   - We do not want to access database every time a client sends a message, so we can use a cache to store the user ID and connection ID.
   - We will use LRU caching scheme to remove the least recently used connection from cache.
 
 #### Trade-offs
 
 - Use of HTTP for chat v/s Use of XMPP for one to one messaging
-  - When we use HTTP XMPP we can only messages from client to server. The only way we can allow messaging is by constantly sending request to server to check if there is any new message.
+  - When we use HTTP XMPP we can only message from client to server. The only way we can allow messaging is by constantly sending request to server to check if there is any new message (polling).
   - XMPP is a peer to peer protocol that allows client and server to send messages to each other.
-  - So using **XMPP will be more efficient**.
+  - As we do not need to constantly send requests to sever, using **XMPP will be more efficient**.
 
 #### Diagram
 
@@ -121,7 +123,7 @@ This service would also allow the chat service to check if the users are matched
   - We will use this database to store the user IDs of both the user
   - We will use indexes on the user ID to make queries faster.
 
-- **Message queue**
+- **[Extra] Message queue**
   - When there are a lot of users submitting request then we can message queue.
   - When we receive a request we acknowledge the user that the request has been submitted, and we push the event to the message queue which can be processed later.
 
@@ -132,13 +134,13 @@ This service would also allow the chat service to check if the users are matched
   - One benefit of storing the match details on the client we save storage on the
     server side. However, as we are storing only the user IDs it is not significant.
   - If we store match data on client side then all data is lost when user uninstalls the applications but if we store it on the server then the data is not lost.
-  - Benefit of storing the details on the server side is that it becomes a source of truth. And as the details on the server cannot be tampered it provides security.
+  - Benefit of storing the details on the server side is that it becomes a source of truth. And as the details on the server cannot be tampered so, it is more secure.
   - **So we store the relevant details on the server side**
 
-- **Rate limiting v/s message queue when there are a lot of requests**
-  - One disadvantage of using rate limiting that even after the user has swiped right this request will be dropped by the server and the user has to right swipe again. This affects the user experience negatively.
-
- <!-- Storing messages on the server pros and cons -->
+- **[Extra] Rate limiting v/s message queue when there are a lot of requests**
+  - One disadvantage of using rate limiting is that even after the user has swiped right, if there are a lot of requests then this request will be dropped by the server and the user has to right swipe again. This causes a bad user experience.
+  - Advantage of using a message queue is that even if there are a lot of requests we can push it to the queue and acknowledge the user that we have received the requests, and it can be processed later, so the user does not have to right swipe again.
+  - **Hence, we should use message queue here.**
 
 #### Diagram
 
@@ -149,13 +151,13 @@ This service would also allow the chat service to check if the users are matched
 #### Description
 
 Server should be able to recommend profiles to users. These recommendations should take into consideration the age and gender preferences.
-Server should also be able to recommend profiles that are close to the user.
+Server should also be able to recommend profiles that are geographically close to the user.
 
 #### Components required
 
 - **Relational database**
-  - We can do horizontal partitioning (sharding) on the database based on the location. So we can do efficient query processing for location.
-  - For every partition we will have a master slave architecture.
+  - We can do horizontal partitioning (sharding) on the database based on the location. Also, we can put indexes on the name and age, so we can do efficient query processing.
+  - For every database partition we will have a master slave architecture. This will allow the application to work even if the primary database fails.
 
 #### Diagram
 
@@ -169,20 +171,23 @@ Server should also be able to recommend profiles that are close to the user.
 
 ##### Profile service
 
-- POST /signup - Creates new account
-- GET /login - Sends the user authentication token
-- GET /user/:userID - Gets the profile of the user ID
-- PUT /user/:userID - Update user details
-- DELETE /user/:userID - Removes the user account
+- **POST /user/signup** - Creates new account
+- **GET /user/login** - Sends the user authentication token
+- **GET /user/:userID** - Gets the profile of the user ID
+- **PUT /user/:userID** - Update user details
+- **DELETE /user/:userID** - Removes the user account
 
-<!-- ##### Session service -->
+##### Session service
+
+- **GET /session/users/:connectionID** - Returns both the users that have the connection ID.
+- **DELETE /session/connection/:connectionID** - Deletes all the data that have the connection ID.
+- **POST /session/connection/:userID1/:userID2** - Adds user ID1 and user ID2 with the same connection ID.
 
 ##### Matcher service
 
-GET /match - Return all the matches of the user
-GET /match/:userID - Returns the profile of matched user ID
-DELETE /match/:userID - Deletes the user ID from the match list/
+- **GET /match** - Return all the matches of the logged-in user.
+- **DELETE /match/:userID** - Deletes the user ID from the match list.
 
 ##### Recommendation service
 
-GET /recommendation - Returns an array of most appropriate profiles.
+- **GET /recommendation** - Returns a collection of most appropriate profiles for logged-in user.
